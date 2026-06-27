@@ -51,8 +51,8 @@
             <div class="row mb-4">
                 <div class="col-md-12">
                     <label class="form-label text-primary">PILIH KATEGORI SERTIFIKASI</label>
-                    <select id="jenisSertifikasi" class="form-select form-select-lg border-primary" autocomplete="off" onchange="toggleForm()">
-                        <option value="">-- Pilih Jenis Sertifikasi --</option>
+                    <select id="kategoriSertifikasi" class="form-select form-select-lg border-primary" autocomplete="off" onchange="toggleForm()">
+                        <option value="">-- Pilih Kategori Sertifikasi --</option>
                         <option value="Sertifikasi Jenjang Jabatan Fungsional (UKOM)">Sertifikasi Jenjang Jabatan Fungsional (UKOM)</option>
                         <option value="Sertifikasi Teknis (Seluruh ASN)">Sertifikasi Teknis (Seluruh ASN)</option>
                     </select>
@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll('.form-control').forEach(el => { 
                 if(el.id !== 'linkSertifikat') el.value = ""; 
             });
-            document.getElementById('jenisSertifikasi').selectedIndex = 0;
+            document.getElementById('kategoriSertifikasi').selectedIndex = 0;
             toggleForm();
         }
     });
@@ -240,10 +240,10 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function toggleForm() {
-    const jenis = document.getElementById('jenisSertifikasi').value;
+    const kategori = document.getElementById('kategoriSertifikasi').value;
     const formContainer = document.getElementById('formIsian');
     
-    if (jenis !== "") {
+    if (kategori !== "") {
         formContainer.style.display = 'block';
     } else {
         formContainer.style.display = 'none';
@@ -277,7 +277,7 @@ function downloadAdminReport() {
     const password = prompt("Password Admin:");
     if(password !== "adminbpbd") { alert("Password Salah!"); return; }
 
-    const data = [["Nama", "NIP", "Jabatan", "Status", "Jenis Sertifikasi", "Target", "No Sertifikat", "Penyelenggara", "Nama Sertifikasi", "Tahun Perolehan", "Bulan Pelaporan", "Waktu Submit"]];
+    const data = [["Nama", "NIP", "Jabatan", "Status", "Kategori Sertifikasi", "Target", "No Sertifikat", "Penyelenggara", "Nama Sertifikasi", "Tahun Perolehan", "Bulan Pelaporan", "Waktu Submit"]];
     
     window.globalDatabase.forEach(db => {
         data.push([
@@ -285,7 +285,7 @@ function downloadAdminReport() {
             db.nip || "-",
             db.jabatan || "-",
             db.status || "-",
-            db.jenis_sertifikasi || "-",
+            db.kategori_sertifikasi || "-",
             db.target || "-",
             db.nomor_sertifikat || "-",
             db.penyelenggara || "-",
@@ -304,10 +304,10 @@ function downloadAdminReport() {
 
 async function simpanKeGist() {
     const selectNama = document.getElementById('selectNama');
-    const jenisSertifikasi = document.getElementById('jenisSertifikasi');
+    const kategoriSertifikasi = document.getElementById('kategoriSertifikasi');
     
     if(!selectNama.value) { alert("Pilih pegawai terlebih dahulu!"); return; }
-    if(!jenisSertifikasi.value) { alert("Pilih jenis sertifikasi!"); return; }
+    if(!kategoriSertifikasi.value) { alert("Pilih kategori sertifikasi!"); return; }
     if(!document.getElementById('target').value || !document.getElementById('tahunPerolehan').value || !document.getElementById('bulanPelaporan').value) {
         alert("Harap lengkapi isian (Target, Tahun, atau Bulan)!"); 
         return;
@@ -322,7 +322,7 @@ async function simpanKeGist() {
         status: document.getElementById('status').value,
         
         // Isian Form Baru
-        jenis_sertifikasi: jenisSertifikasi.value,
+        kategori_sertifikasi: kategoriSertifikasi.value,
         target: document.getElementById('target').value,
         nomor_sertifikat: document.getElementById('nomorSertifikat').value,
         penyelenggara: document.getElementById('penyelenggara').value,
