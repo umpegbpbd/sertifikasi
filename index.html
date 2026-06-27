@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Sertifikasi ASN</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body { background-color: #f8f9fa; font-family: Arial, sans-serif; }
+        .card { box-shadow: 0 4px 8px rgba(0,0,0,0.1); border: none; margin-bottom: 20px; }
+        .header-title { background-color: #0d6efd; color: white; padding: 20px; border-radius: 5px 5px 0 0; }
+        .form-label { font-weight: bold; font-size: 0.9em; }
+        .upload-box { border: 2px dashed #198754; padding: 15px; border-radius: 8px; background-color: #f8fff9; }
+    </style>
+</head>
+<body>
+
+<div class="container mt-4 mb-5">
+    <div class="card">
+        <div class="header-title text-center">
+            <h4 class="mb-2 fw-bold">SERTIFIKASI JENJANG JABATAN FUNGSIONAL (UKOM) <br> DAN SERTIFIKASI TEKNIS (SELURUH ASN)</h4>
+            <p class="mb-0">Badan Penanggulangan Bencana Daerah Kabupaten Trenggalek</p>
+        </div>
+        <div class="card-body">
+            
+            <div id="loadingInfo" class="alert alert-info text-center" style="display: none;">
+                ⏳ Sedang menyinkronkan data dengan Gist...
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <label class="form-label text-primary">PILIH NAMA PEGAWAI</label>
+                    <select id="selectNama" class="form-select form-select-lg border-primary" autocomplete="off">
+                        <option value="">-- Ketik atau Pilih Nama Pegawai --</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="row mb-3">
+                <div class="col-md-6 mb-3"><label class="form-label">NIP</label><input type="text" id="nip" class="form-control" readonly></div>
+                <div class="col-md-6 mb-3"><label class="form-label">Jabatan</label><input type="text" id="jabatan" class="form-control" readonly></div>
+                <div class="col-md-6 mb-3"><label class="form-label">Rumpun Jabatan</label><input type="text" id="rumpun" class="form-control" readonly></div>
+                <div class="col-md-6 mb-3"><label class="form-label">Status</label><input type="text" id="status" class="form-control" readonly></div>
+            </div>
+
+            <hr>
+
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <label class="form-label text-primary">PILIH JENIS SERTIFIKASI</label>
+                    <select id="jenisSertifikasi" class="form-select form-select-lg border-primary" autocomplete="off" onchange="toggleForm()">
+                        <option value="">-- Pilih Jenis Sertifikasi --</option>
+                        <option value="Sertifikasi Jenjang Jabatan Fungsional (UKOM)">Sertifikasi Jenjang Jabatan Fungsional (UKOM)</option>
+                        <option value="Sertifikasi Teknis (Seluruh ASN)">Sertifikasi Teknis (Seluruh ASN)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="formIsian" style="display: none;">
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Target</label>
+                        <select id="target" class="form-select">
+                            <option value="">-- Pilih Target --</option>
+                            <option value="Ya">Ya</option>
+                            <option value="Tidak">Tidak</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nomor Sertifikat</label>
+                        <input type="text" id="nomorSertifikat" class="form-control" placeholder="Isi manual">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Penyelenggara</label>
+                        <input type="text" id="penyelenggara" class="form-control" placeholder="Isi manual">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nama Sertifikasi</label>
+                        <input type="text" id="namaSertifikasi" class="form-control" placeholder="Isi manual">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Tahun Perolehan</label>
+                        <select id="tahunPerolehan" class="form-select">
+                            <option value="">-- Pilih Tahun --</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                            <option value="2030">2030</option>
+                            <option value="2031">2031</option>
+                            <option value="2032">2032</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Bulan Pelaporan</label>
+                        <select id="bulanPelaporan" class="form-select">
+                            <option value="">-- Pilih Bulan --</option>
+                            <option value="Januari">Januari</option>
+                            <option value="Februari">Februari</option>
+                            <option value="Maret">Maret</option>
+                            <option value="April">April</option>
+                            <option value="Mei">Mei</option>
+                            <option value="Juni">Juni</option>
+                            <option value="Juli">Juli</option>
+                            <option value="Agustus">Agustus</option>
+                            <option value="September">September</option>
+                            <option value="Oktober">Oktober</option>
+                            <option value="November">November</option>
+                            <option value="Desember">Desember</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="upload-box mb-4">
+                    <label class="form-label text-success fw-bold">📂 LINK SERTIFIKAT PRIBADI</label>
+                    <div class="input-group mb-2">
+                        <input type="url" id="linkSertifikat" class="form-control bg-white" readonly value="https://drive.google.com/drive/folders/1TwvDBmqpUsvi3IJJwbFPqPPLyDuU93zs?usp=sharing">
+                        <button class="btn btn-success" type="button" onclick="bukaFolderDrive()">Buka Folder Upload</button>
+                    </div>
+                    <small class="text-muted"><i>*Klik tombol di atas untuk menuju link Drive pengumpulan sertifikat pribadi Anda.</i></small>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-info text-white" onclick="downloadAdminReport()">Unduh Laporan Excel 📥</button>
+                <button type="button" class="btn btn-primary fw-bold px-5" onclick="simpanKeGist()">!!!!!!! SUBMIT !!!!!!!!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ID Gist Baru Sesuai Permintaan
+const GIST_ID = "158723edb921eb62f0f804ac4cad2106";
+const GITHUB_TOKEN = "ghp_" + "dPbKhSLetKt2wMr5uyVATeQCPRU2j50i6lnS"; 
+
+window.globalDatabase = [];
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById('selectNama').selectedIndex = 0;
+
+    const dataPegawai = [
+        {"nama": "Drs.STEFANUS TRIADI ATMONO, M.Si.", "nip": "197009071990031002", "jabatan": "Kepala Pelaksana BPBD", "rumpun": "JPT", "status": "PNS"}, 
+        {"nama": "Drs. AGUNG WIDODO", "nip": "196906011994031006", "jabatan": "Kabid. Pencegahan, Kesiapsiagaan, dan Kedaruratan", "rumpun": "ADMINISTRATOR", "status": "PNS"}, 
+        {"nama": "DWIANA HANDAYANI,SE", "nip": "197807172011012005", "jabatan": "Perencana Ahli Muda", "rumpun": "FUNGSIONAL AHLI", "status": "PNS"}, 
+        {"nama": "EDY PURWANTO, SE", "nip": "197208122008010017", "jabatan": "Analis Kebencanaan Ahli Muda", "rumpun": "FUNGSIONAL AHLI", "status": "PNS"}, 
+        {"nama": "Bakti Dwi Prasetyo, S.T., M.T.", "nip": "197805272006041020", "jabatan": "Analis Kebencanaan Ahli Muda", "rumpun": "FUNGSIONAL AHLI", "status": "PNS"}, 
+        {"nama": "SUDARSONO", "nip": "197112272007011007", "jabatan": "Pengadministrasi Perkantoran", "rumpun": "PELAKSANA KELAS 5", "status": "PNS"}, 
+        {"nama": "ANIKMATUL KHOIRIYAH, S.M.", "nip": "198708152011012011", "jabatan": "Penelaah Teknis Kebijakan", "rumpun": "PELAKSANA KELAS 7", "status": "PNS"}, 
+        {"nama": "RENY YANTI, S.Pd", "nip": "197812142008012017", "jabatan": "Pengolah data dan informasi", "rumpun": "PELAKSANA KELAS 6", "status": "PNS"}, 
+        {"nama": "RIZAL RIZKIANTO, A.Md", "nip": "199510302020121005", "jabatan": "Pengolah data dan informasi", "rumpun": "PELAKSANA KELAS 6", "status": "PNS"}, 
+        {"nama": "SUJANTORO", "nip": "197307042012121003", "jabatan": "Pengadministrasi Perkantoran", "rumpun": "PELAKSANA KELAS 5", "status": "PNS"}, 
+        {"nama": "WAWAN PURWANTO", "nip": "198507102009011005", "jabatan": "Operator Layanan Operasional", "rumpun": "PELAKSANA KELAS 3", "status": "PNS"}, 
+        {"nama": "Abdurrohman Malik Ibrahim, S.Psi.", "nip": "199604262020121004", "jabatan": "Penata Layanan Operasional", "rumpun": "PELAKSANA KELAS 7", "status": "PNS"}, 
+        {"nama": "Khoirul Anam A.Md", "nip": "198202262011011011", "jabatan": "Pengolah data dan informasi", "rumpun": "PELAKSANA KELAS 6", "status": "PNS"}, 
+        {"nama": "PRABOWO", "nip": "197412041997031003", "jabatan": "Operator Layanan Operasional", "rumpun": "PELAKSANA KELAS 5", "status": "PNS"}, 
+        {"nama": "TONI MURTONO, A.Md", "nip": "198301022011011009", "jabatan": "Pengolah data dan informasi", "rumpun": "PELAKSANA KELAS 6", "status": "PNS"}, 
+        {"nama": "HARI MUSTAPA", "nip": "197605202012121005", "jabatan": "Operator Layanan Operasional", "rumpun": "PELAKSANA KELAS 5", "status": "PNS"}, 
+        {"nama": "MUHAMAD CHOLIK", "nip": "197904082011011005", "jabatan": "Operator Layanan Operasional", "rumpun": "PELAKSANA KELAS 5", "status": "PNS"}, 
+        {"nama": "Imam Basori, SE", "nip": "196901221991031006", "jabatan": "Penelaah Teknis Kebijakan", "rumpun": "PELAKSANA KELAS 7", "status": "PNS"}, 
+        {"nama": "DEDY KURNIAWAN, S.T.", "nip": "199409112022031003", "jabatan": "Penelaah Teknis Kebijakan", "rumpun": "PELAKSANA KELAS 7", "status": "PNS"}, 
+        {"nama": "TRI EFENDI", "nip": "198009102007011003", "jabatan": "Operator Layanan Operasional", "rumpun": "PELAKSANA KELAS 3", "status": "PNS"}, 
+        {"nama": "SUGENG HARYADI, S.T", "nip": "196912212014061002", "jabatan": "Analis Kebencanaan Ahli Muda", "rumpun": "FUNGSIONAL AHLI", "status": "PNS"}, 
+        {"nama": "MISRALI, S.E", "nip": "199304202023211018", "jabatan": "Penata Penanggulangan Bencana Ahli Pertama", "rumpun": "PPPK FUNGSIONAL", "status": "PPPK"}, 
+        {"nama": "LUHUR NAWANG SUKMA KUSUMA, S.E.", "nip": "198411262023212019", "jabatan": "Penata Penanggulangan Bencana Ahli Pertama", "rumpun": "PPPK FUNGSIONAL", "status": "PPPK"}, 
+        {"nama": "DEDY PEBRI YUSTISIANTO PRATAMA, S.Stat", "nip": "198802272024211007", "jabatan": "Penata Penanggulangan Bencana Ahli Pertama", "rumpun": "PPPK FUNGSIONAL", "status": "PPPK"}, 
+        {"nama": "DWI BAROROH BARIDAH, S.Psi", "nip": "199110052024212018", "jabatan": "Penata Penanggulangan Bencana Ahli Pertama", "rumpun": "PPPK FUNGSIONAL", "status": "PPPK"}, 
+        {"nama": "DIAN LUPI YUSTIKASARI, A.Md.", "nip": "199806182025062012", "jabatan": "Pranata Komputer Terampil", "rumpun": "FUNGSIONAL TERAMPIL", "status": "PNS"}, 
+        {"nama": "ARDEA WIDIANTO ARI HIDAYAT, S.Psi.", "nip": "200001102025061004", "jabatan": "Analis Kebencanaan Ahli Pertama", "rumpun": "FUNGSIONAL AHLI", "status": "PNS"}, 
+        {"nama": "HADI PURWANTO", "nip": "198407172025211013", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "ARDY DESTA EKA PUTRA", "nip": "199212312025211008", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "AGUS SUGHULIN", "nip": "197808082025211006", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "ADI MUJIPRASETYO", "nip": "199804142025211016", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "SARI MUMANTI", "nip": "198808242025212018", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "IDA APRILIYA", "nip": "199004162025212020", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "ALVIN WAHYU DWISAPUTRA", "nip": "199404122025211011", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "AFRISKA PRASETYA", "nip": "199104282025211011", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "GIGIH HIRTAGARA", "nip": "199205312025211004", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "IMAM MURODI", "nip": "198509152025211009", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "GUSTA MULTI PRATAMA", "nip": "199208062025211012", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "YONA PRAMISTA MAHARDIKA", "nip": "199903312025211007", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "KURNIA RIAN RACHMASARI", "nip": "199302222025212019", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "YOHANTAR LUTFI ARISANDHI", "nip": "199106182025211019", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "YENI DWI LESTARI", "nip": "199404062025212024", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "AYU FERISTARINI", "nip": "199402072025212019", "jabatan": "Pengadministrasi Perkantoran", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "SITI ROBIAH", "nip": "199410012025212021", "jabatan": "Pengadministrasi Perkantoran", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "DWI MARTASARININGSIH", "nip": "199403032025212025", "jabatan": "Pengadministrasi Perkantoran", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "ANDRIK PRAYUGO", "nip": "199112152025211035", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "NIKO KURNIAWAN", "nip": "198508312025211037", "jabatan": "Pengelola Umum Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "PRENDICHANATA", "nip": "199209072025211044", "jabatan": "Pengelola Umum Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}, 
+        {"nama": "HINN BONKE SAMALIWU", "nip": "199601042025211025", "jabatan": "Operator Layanan Operasional", "rumpun": "PPPK TEKNIS", "status": "PPPK"}
+    ];
+
+    window.dataPegawai = dataPegawai; 
+
+    const selectNama = document.getElementById('selectNama');
+    dataPegawai.forEach(pegawai => {
+        let option = document.createElement('option');
+        option.value = pegawai.nip;
+        option.text = pegawai.nama;
+        selectNama.appendChild(option);
+    });
+
+    selectNama.addEventListener('change', function() {
+        const selectedNip = this.value;
+        const pegawai = dataPegawai.find(p => p.nip === selectedNip);
+        
+        if(pegawai) {
+            document.getElementById('nip').value = pegawai.nip;
+            document.getElementById('jabatan').value = pegawai.jabatan;
+            document.getElementById('rumpun').value = pegawai.rumpun;
+            document.getElementById('status').value = pegawai.status;
+        } else {
+            document.querySelectorAll('.form-control').forEach(el => { 
+                if(el.id !== 'linkSertifikat') el.value = ""; 
+            });
+            document.getElementById('jenisSertifikasi').selectedIndex = 0;
+            toggleForm();
+        }
+    });
+
+    loadDatabaseGist();
+});
+
+function toggleForm() {
+    const jenis = document.getElementById('jenisSertifikasi').value;
+    const formContainer = document.getElementById('formIsian');
+    
+    if (jenis !== "") {
+        formContainer.style.display = 'block';
+    } else {
+        formContainer.style.display = 'none';
+    }
+}
+
+async function loadDatabaseGist() {
+    document.getElementById('loadingInfo').style.display = 'block';
+    try {
+        const url = `https://api.github.com/gists/${GIST_ID}`;
+        const res = await fetch(url, { headers: { 'Authorization': 'token ' + GITHUB_TOKEN }});
+        if(res.ok) {
+            const data = await res.json();
+            if (data.files && data.files['data_sertifikasi.json']) {
+                const content = JSON.parse(data.files['data_sertifikasi.json'].content);
+                window.globalDatabase = Array.isArray(content) ? content : Object.values(content);
+            } else {
+                window.globalDatabase = [];
+            }
+        }
+    } catch(e) { console.log("Database loading error: ", e); }
+    document.getElementById('loadingInfo').style.display = 'none';
+}
+
+function bukaFolderDrive() {
+    const link = document.getElementById('linkSertifikat').value;
+    window.open(link, '_blank');
+}
+
+function downloadAdminReport() {
+    const password = prompt("Password Admin:");
+    if(password !== "adminbpbd") { alert("Password Salah!"); return; }
+
+    const data = [["Nama", "NIP", "Jabatan", "Status", "Jenis Sertifikasi", "Target", "No Sertifikat", "Penyelenggara", "Nama Sertifikasi", "Tahun Perolehan", "Bulan Pelaporan", "Waktu Submit"]];
+    
+    window.globalDatabase.forEach(db => {
+        data.push([
+            db.nama || "-",
+            db.nip || "-",
+            db.jabatan || "-",
+            db.status || "-",
+            db.jenis_sertifikasi || "-",
+            db.target || "-",
+            db.nomor_sertifikat || "-",
+            db.penyelenggara || "-",
+            db.nama_sertifikasi || "-",
+            db.tahun_perolehan || "-",
+            db.bulan_pelaporan || "-",
+            db.waktu_update || "-"
+        ]);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Rekap_Sertifikasi");
+    XLSX.writeFile(wb, "Laporan_Sertifikasi_ASN.xlsx");
+}
+
+async function simpanKeGist() {
+    const selectNama = document.getElementById('selectNama');
+    const jenisSertifikasi = document.getElementById('jenisSertifikasi');
+    
+    if(!selectNama.value) { alert("Pilih pegawai terlebih dahulu!"); return; }
+    if(!jenisSertifikasi.value) { alert("Pilih jenis sertifikasi!"); return; }
+    if(!document.getElementById('target').value || !document.getElementById('tahunPerolehan').value || !document.getElementById('bulanPelaporan').value) {
+        alert("Harap lengkapi isian dropdown (Target, Tahun, atau Bulan)!"); 
+        return;
+    }
+
+    const nipPegawai = selectNama.value;
+    const recordDatabase = {
+        nip: nipPegawai,
+        nama: selectNama.options[selectNama.selectedIndex].text,
+        jabatan: document.getElementById('jabatan').value,
+        rumpun_jabatan: document.getElementById('rumpun').value,
+        status: document.getElementById('status').value,
+        
+        // Isian Form Baru
+        jenis_sertifikasi: jenisSertifikasi.value,
+        target: document.getElementById('target').value,
+        nomor_sertifikat: document.getElementById('nomorSertifikat').value,
+        penyelenggara: document.getElementById('penyelenggara').value,
+        nama_sertifikasi: document.getElementById('namaSertifikasi').value,
+        tahun_perolehan: document.getElementById('tahunPerolehan').value,
+        bulan_pelaporan: document.getElementById('bulanPelaporan').value,
+        link_sertifikat: document.getElementById('linkSertifikat').value,
+        
+        waktu_update: new Date().toLocaleString()
+    };
+
+    window.globalDatabase.push(recordDatabase);
+
+    try {
+        const response = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': 'token ' + GITHUB_TOKEN,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                files: {
+                    "data_sertifikasi.json": { content: JSON.stringify(window.globalDatabase, null, 2) }
+                }
+            })
+        });
+
+        if (response.ok) {
+            alert("✅ Data Form Sertifikasi berhasil disimpan!");
+            location.reload();
+        } else {
+            const err = await response.json();
+            alert("Gagal menyimpan data: " + (err.message || "Unknown error"));
+        }
+    } catch (error) { alert("Error koneksi: " + error.message); }
+}
+</script>
+</body>
+</html>
